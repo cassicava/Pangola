@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pangola</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <h1 class="logo">Pangola</h1>
+  <p>Cardápio</p>
+</header>
+
+<nav id="menu-categorias">
+  <a href="#lanches">Lanches</a>
+  <a href="#adicionais">Adicionais</a>
+  <a href="#porcoes">Porções</a>
+  <a href="#bebidas">Bebidas</a>
+</nav>
+
+<main>
+  <!-- LANCHES -->
+  <section class="tipos">
+    <h2 id="lanches">LANCHES</h2>
+
+    <h3>🥪 LANCHES</h3>
+    <div id="lista-lanchessimples"></div>
+
+    <h3>🍔 LANCHES COM HAMBÚRGUER</h3>
+    <div id="lista-lancheshamburguer"></div>
+
+    <h3>🌭 CACHORRO QUENTE</h3>
+    <div id="lista-lanchescachorro"></div>
+
+    <h3>🐔 LANCHES COM FRANGO</h3>
+    <div id="lista-lanchesfrango"></div>
+
+    <h3>🥩 LANCHES COM FILÉ</h3>
+    <div id="lista-lanchesfile"></div>
+  </section>
+
+  <!-- ADICIONAIS -->
+  <section class="tipos">
+    <h2 id="adicionais">ADICIONAIS</h2>
+    <div id="lista-adicionais"></div>
+  </section>
+
+  <!-- PORÇÕES -->
+  <section class="tipos">
+    <h2 id="porcoes">PORÇÕES</h2>
+    <div id="lista-porcoes"></div>
+  </section>
+
+  <!-- BEBIDAS -->
+  <section class="tipos">
+    <h2 id="bebidas">BEBIDAS</h2>
+    <div id="lista-bebidas"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="carrinho-info">
+    <span>Total: R$ <span id="valor-total">0,00</span></span>
+    <button id="btn-finalizar">Ver Carrinho (<span id="quantidade-carrinho">0</span>)</button>
+  </div>
+</footer>
+
+<!-- POPUP -->
+<div id="popup-carrinho">
+  <div class="popup-conteudo">
+    <h2>Seu Pedido</h2>
+    <div id="lista-carrinho"></div>
+    <div id="valor-total-popup">Total: R$ 0,00</div>
+    <div class="popup-buttons">
+      <button id="btn-fechar">Fechar</button>
+      <button id="btn-enviar">Enviar Pedido</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const produtos = {
+  lanchessimples: [
+    { nome: "Misto Quente", descricao: "Presunto, queijo, alface, tomate, milho, batata, maionese", preco: 18 },
+    { nome: "Americano", descricao: "Presunto, queijo, ovo, alface, tomate, maionese", preco: 21 },
+    { nome: "Misto Bacon", descricao: "Presunto, queijo, bacon, alface, tomate, milho, batata, maionese", preco: 23 }
+  ],
+  lancheshamburguer: [
+    { nome: "X-Burguer", descricao: "Hambúrguer, queijo, tomate, catupiry", preco: 16 },
+    { nome: "X-Salada", descricao: "Hambúrguer, presunto, queijo, alface, tomate, catupiry", preco: 21 },
+    { nome: "X-Egg", descricao: "Hambúrguer, presunto, queijo, ovo, tomate, catupiry", preco: 22 },
+    { nome: "X-Bacon", descricao: "Hambúrguer, presunto, queijo, bacon, tomate, catupiry", preco: 25 },
+    { nome: "X-Tudo", descricao: "Hambúrguer, presunto, queijo, bacon, ovo, alface, tomate, catupiry", preco: 30 },
+    { nome: "X-Tudo Duplo", descricao: "2 Hambúrgueres, presunto, queijo, 2 ovos, bacon, alface, tomate, catupiry", preco: 40 }
+  ],
+  lanchescachorro: [
+    { nome: "Tradicional", descricao: "Molho, salsicha, alface, tomate, milho, batata, catchup, maionese", preco: 15 },
+    { nome: "Especial", descricao: "Molho, salsicha, alface, tomate, milho, batata, presunto e queijo", preco: 20 },
+    { nome: "Tudo", descricao: "Molho, salsicha, alface, tomate, milho, batata, presunto, queijo, bacon, hambúrguer", preco: 30 }
+  ],
+  lanchesfrango: [
+    { nome: "X-Frango Salada", descricao: "Frango, presunto, queijo, alface, tomate, catupiry", preco: 30 },
+    { nome: "X-Frango Bacon", descricao: "Frango, presunto, queijo, bacon, tomate, catupiry", preco: 35 },
+    { nome: "X-Frango Tudo", descricao: "Frango, presunto, queijo, alface, tomate, bacon, ovo e catupiry", preco: 40 }
+  ],
+  lanchesfile: [
+    { nome: "X-Filé", descricao: "Filé, queijo, alface, tomate, catupiry", preco: 35 },
+    { nome: "Bauru", descricao: "Filé, queijo, alface, tomate, bacon, catupiry", preco: 40 },
+    { nome: "X-Filé Tudo", descricao: "Filé, presunto, queijo, alface, tomate, bacon, ovo, catupiry", preco: 45 }
+  ],
+  adicionais: [
+    { nome: "Hambúrguer", preco: 5 },
+    { nome: "Bacon", preco: 6 },
+    { nome: "Queijo/Presunto", preco: 6 },
+    { nome: "Cheddar/Catupiry", preco: 5 },
+    { nome: "Salsicha", preco: 3 },
+    { nome: "Ovo", preco: 3 },
+    { nome: "Milho", preco: 3 },
+    { nome: "Batata Palha", preco: 3 }
+  ],
+  porcoes: [
+    { nome: "Batata Frita (Meia)", preco: 20 },
+    { nome: "Batata Frita (Inteira)", preco: 30 },
+    { nome: "Batata Queijo e Bacon (Meia)", preco: 40 },
+    { nome: "Batata Queijo e Bacon (Inteira)", preco: 52 },
+    { nome: "Batata Completa (Meia)", preco: 52 },
+    { nome: "Batata Completa (Inteira)", preco: 58 },
+    { nome: "Frango à Passarinho (Meia)", preco: 50 },
+    { nome: "Frango à Passarinho (Inteira)", preco: 58 },
+    { nome: "Frango à Passarinho Queijo e Bacon (Meia)", preco: 58 },
+    { nome: "Frango à Passarinho Queijo e Bacon (Inteira)", preco: 65 },
+    { nome: "Calabresa Acebolada (Meia)", preco: 30 },
+    { nome: "Calabresa Acebolada (Inteira)", preco: 50 },
+    { nome: "Filé na Chapa (Meia)", preco: 55 },
+    { nome: "Filé na Chapa (Inteira)", preco: 90 },
+    { nome: "Filé de Frango na Chapa (Meia)", preco: 35 },
+    { nome: "Filé de Frango na Chapa (Inteira)", preco: 60 }
+  ],
+  bebidas: [
+    { nome: "Refrigerante lata 350ml", preco: 6 },
+    { nome: "Suco pequeno 330ml", preco: 7 },
+    { nome: "Suco grande 900ml", preco: 15 },
+    { nome: "Coca Cola 2L", preco: 15 },
+    { nome: "Refrigerante sabores 2L", preco: 14 },
+    { nome: "Jaboti 2L", preco: 8 },
+    { nome: "Água sem gás", preco: 4 },
+    { nome: "Água com gás", preco: 5 },
+    { nome: "H2O 500ml", preco: 7 },
+    { nome: "H2O 1,5L", preco: 15 },
+    { nome: "Cerveja lata 350ml", preco: 6 }
+  ]
+};
+
+const listaCarrinho = document.getElementById('lista-carrinho');
+const valorTotal = document.getElementById('valor-total');
+const quantidadeCarrinho = document.getElementById('quantidade-carrinho');
+const valorTotalPopup = document.getElementById('valor-total-popup');
+const popup = document.getElementById('popup-carrinho');
+const btnFinalizar = document.getElementById('btn-finalizar');
+const btnFechar = document.getElementById('btn-fechar');
+const btnEnviar = document.getElementById('btn-enviar');
+
+let carrinho = [];
+
+function pegarQuantidade(nome) {
+  const item = carrinho.find(p => p.nome === nome);
+  return item ? item.quantidade : 0;
+}
+
+function atualizarQuantidadeProdutosNaTela() {
+  document.querySelectorAll('.produtos').forEach(div => {
+    const nome = div.getAttribute('data-nome');
+    const quantidade = pegarQuantidade(nome);
+    const span = div.querySelector('.quantidade');
+    if (span) span.textContent = quantidade;
+  });
+}
+
+function criarProduto(produto, container) {
+  const div = document.createElement('div');
+  div.classList.add('produtos');
+  div.setAttribute('data-nome', produto.nome);
+  div.setAttribute('data-preco', produto.preco);
+
+  div.innerHTML = `
+    <div class="topo-produto">
+      <div>
+        <h4>${produto.nome}</h4>
+        ${produto.descricao ? `<p class="descricao">${produto.descricao}</p>` : ""}
+      </div>
+      <div class="preco-controle">
+        <h6>R$ ${produto.preco.toFixed(2)}</h6>
+        <div class="controle-quantidade">
+          <button class="diminuir">-</button>
+          <span class="quantidade">0</span>
+          <button class="aumentar">+</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  container.appendChild(div);
+
+  const aumentarBtn = div.querySelector(".aumentar");
+  const diminuirBtn = div.querySelector(".diminuir");
+  const quantidadeSpan = div.querySelector(".quantidade");
+
+  aumentarBtn.addEventListener("click", () => {
+    adicionarProduto(produto.nome, produto.preco);
+    quantidadeSpan.textContent = pegarQuantidade(produto.nome);
+    atualizarCarrinho();
+  });
+
+  diminuirBtn.addEventListener("click", () => {
+    removerProduto(produto.nome);
+    quantidadeSpan.textContent = pegarQuantidade(produto.nome);
+    atualizarCarrinho();
+  });
+}
+
+function adicionarProduto(nome, preco) {
+  const existente = carrinho.find(item => item.nome === nome);
+  if (existente) existente.quantidade++;
+  else carrinho.push({ nome, preco, quantidade: 1 });
+}
+
+function removerProduto(nome) {
+  const existente = carrinho.find(item => item.nome === nome);
+  if (existente) {
+    existente.quantidade--;
+    if (existente.quantidade <= 0) carrinho = carrinho.filter(item => item.nome !== nome);
+  }
+}
+
+function atualizarCarrinho() {
+  valorTotal.innerText = calcularTotal().toFixed(2);
+  valorTotalPopup.innerText = `Total: R$ ${calcularTotal().toFixed(2)}`;
+  const totalItens = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
+  quantidadeCarrinho.innerText = totalItens;
+}
+
+function calcularTotal() {
+  return carrinho.reduce((total, item) => total + item.preco * item.quantidade, 0);
+}
+
+function mostrarCarrinho() {
+  listaCarrinho.innerHTML = '';
+
+  if (carrinho.length === 0) {
+    listaCarrinho.innerHTML = `<p class="carrinho-vazio">Seu carrinho está vazio.</p>`;
+  } else {
+    carrinho.forEach((item, index) => {
+      const div = document.createElement('div');
+      div.classList.add('item-carrinho', 'fade-in');
+      div.innerHTML = `
+        <span>${item.nome} - R$ ${item.preco.toFixed(2)}</span>
+        <div class="controle-quantidade">
+          <button onclick="alterarQuantidade(${index}, -1)" class="diminuir">-</button>
+          <span>${item.quantidade}</span>
+          <button onclick="alterarQuantidade(${index}, 1)" class="aumentar">+</button>
+        </div>
+      `;
+      listaCarrinho.appendChild(div);
+    });
+  }
+
+  popup.classList.add('show');
+}
+
+function alterarQuantidade(index, delta) {
+  carrinho[index].quantidade += delta;
+  if (carrinho[index].quantidade <= 0) {
+    carrinho.splice(index, 1);
+  }
+  mostrarCarrinho();
+  atualizarCarrinho();
+  atualizarQuantidadeProdutosNaTela();
+}
+
+btnFinalizar.addEventListener('click', () => {
+  mostrarCarrinho();
+});
+
+btnFechar.addEventListener('click', () => {
+  popup.classList.remove('show');
+});
+
+btnEnviar.addEventListener('click', () => {
+  const mensagem = carrinho.map(p => `${p.quantidade}x ${p.nome}`).join('\n') +
+    `\n\nTotal: R$ ${calcularTotal().toFixed(2)}`;
+  const url = `https://wa.me/5516992003253?text=${encodeURIComponent(mensagem)}`;
+  window.open(url, '_blank');
+});
+
+Object.keys(produtos).forEach(categoria => {
+  const container = document.getElementById(`lista-${categoria}`);
+  if (container) {
+    produtos[categoria].forEach(produto => criarProduto(produto, container));
+  }
+});
+</script>
+
+<div class="autor">
+  <p>Desenvolvido por <a href="https://wa.me/5516992003253" target="_blank">Cassiano - WhatsApp</a></p>
+</div>
+
+</body>
+</html>
