@@ -32,10 +32,7 @@ header .logo {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
-  text-shadow: -1px -1px 0 #000,
-               1px -1px 0 #000,
-              -1px  1px 0 #000,
-               1px  1px 0 #000;
+
 }
 
 /* NAV */
@@ -307,6 +304,7 @@ footer button {
 .autor a:hover {
   text-decoration: underline;
 }
+
 
 
 
