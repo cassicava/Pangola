@@ -26,12 +26,7 @@ header {
 
 header .logo {
   font-family: "Lobster", cursive;
-  font-size: 2.8em;
-  background: linear-gradient(135deg, #FF6600, #FF9900);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  position: relative;
-
+  font-size: 2.5em;
 }
 
 /* NAV */
@@ -303,9 +298,3 @@ footer button {
 .autor a:hover {
   text-decoration: underline;
 }
-
-
-
-
-
-
