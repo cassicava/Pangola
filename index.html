@@ -14,11 +14,11 @@
   <p>Cardápio</p>
 </header>
 
+<!-- removido o menu de categorias com adicionais -->
 <nav id="menu-categorias">
-  <a href="#lanches">Lanche</a>
-  <a href="#adicionais">Adicional</a>
-  <a href="#porcoes">Porção</a>
-  <a href="#bebidas">Bebida</a>
+  <a href="#lanches">Lanches</a>
+  <a href="#porcoes">Porções</a>
+  <a href="#bebidas">Bebidas</a>
 </nav>
 
 <main>
@@ -42,12 +42,6 @@
     <div id="lista-lanchesfile"></div>
   </section>
 
-  <!-- ADICIONAIS -->
-  <section class="tipos">
-    <h2 id="adicionais">ADICIONAIS</h2>
-    <div id="lista-adicionais"></div>
-  </section>
-
   <!-- PORÇÕES -->
   <section class="tipos">
     <h2 id="porcoes">PORÇÕES</h2>
@@ -68,7 +62,7 @@
   </div>
 </footer>
 
-<!-- POPUP -->
+<!-- POPUP CARRINHO -->
 <div id="popup-carrinho">
   <div class="popup-conteudo">
     <h2>Seu Pedido</h2>
@@ -77,6 +71,28 @@
     <div class="popup-buttons">
       <button id="btn-fechar">Fechar</button>
       <button id="btn-enviar">Enviar Pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP CONFIRMAÇÃO DE ADICIONAIS -->
+<div id="popup-confirmar">
+  <div class="popup-conteudo">
+    <h2>Deseja adicionais?</h2>
+    <div class="popup-buttons">
+      <button id="btn-adicional-sim">Sim</button>
+      <button id="btn-adicional-nao">Não</button>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP ADICIONAIS -->
+<div id="popup-adicionais">
+  <div class="popup-conteudo">
+    <h2>Escolha seus adicionais</h2>
+    <div id="lista-adicionais"></div>
+    <div class="popup-buttons">
+      <button id="btn-add-concluir">Concluir</button>
     </div>
   </div>
 </div>
@@ -163,8 +179,17 @@ const btnFinalizar = document.getElementById('btn-finalizar');
 const btnFechar = document.getElementById('btn-fechar');
 const btnEnviar = document.getElementById('btn-enviar');
 
-let carrinho = [];
+const popupConfirmar = document.getElementById('popup-confirmar');
+const btnAdicionalSim = document.getElementById('btn-adicional-sim');
+const btnAdicionalNao = document.getElementById('btn-adicional-nao');
+const popupAdicionais = document.getElementById('popup-adicionais');
+const btnAddConcluir = document.getElementById('btn-add-concluir');
 
+let carrinho = [];
+let produtoSelecionado = null;
+let adicionaisSelecionados = [];
+
+// Funções carrinho
 function pegarQuantidade(nome) {
   const item = carrinho.find(p => p.nome === nome);
   return item ? item.quantidade : 0;
@@ -179,7 +204,7 @@ function atualizarQuantidadeProdutosNaTela() {
   });
 }
 
-function criarProduto(produto, container) {
+function criarProduto(produto, container, isLanche=false) {
   const div = document.createElement('div');
   div.classList.add('produtos');
   div.setAttribute('data-nome', produto.nome);
@@ -193,46 +218,47 @@ function criarProduto(produto, container) {
       </div>
       <div class="preco-controle">
         <h6>R$ ${produto.preco.toFixed(2)}</h6>
-        <div class="controle-quantidade">
-          <button class="diminuir">-</button>
-          <span class="quantidade">0</span>
-          <button class="aumentar">+</button>
-        </div>
+        <button class="btn-add">Adicionar</button>
       </div>
     </div>
   `;
 
   container.appendChild(div);
 
-  const aumentarBtn = div.querySelector(".aumentar");
-  const diminuirBtn = div.querySelector(".diminuir");
-  const quantidadeSpan = div.querySelector(".quantidade");
-
-  aumentarBtn.addEventListener("click", () => {
-    adicionarProduto(produto.nome, produto.preco);
-    quantidadeSpan.textContent = pegarQuantidade(produto.nome);
-    atualizarCarrinho();
-  });
-
-  diminuirBtn.addEventListener("click", () => {
-    removerProduto(produto.nome);
-    quantidadeSpan.textContent = pegarQuantidade(produto.nome);
-    atualizarCarrinho();
+  const addBtn = div.querySelector(".btn-add");
+  addBtn.addEventListener("click", () => {
+    if(isLanche){
+      produtoSelecionado = produto;
+      adicionaisSelecionados = [];
+      popupConfirmar.classList.add('show');
+    } else {
+      adicionarProduto(produto.nome, produto.preco);
+      atualizarCarrinho();
+    }
   });
 }
 
-function adicionarProduto(nome, preco) {
-  const existente = carrinho.find(item => item.nome === nome);
+function criarAdicional(produto, container){
+  const div = document.createElement('div');
+  div.classList.add('produtos');
+  div.innerHTML = `
+    <div class="topo-produto">
+      <h4>${produto.nome}</h4>
+      <div class="preco-controle">
+        <h6>R$ ${produto.preco.toFixed(2)}</h6>
+        <input type="checkbox" value="${produto.nome}" data-preco="${produto.preco}">
+      </div>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function adicionarProduto(nome, preco, adicionais=[]) {
+  let descricaoAdd = adicionais.length > 0 ? " + " + adicionais.map(a=>a.nome).join(", ") : "";
+  let nomeFinal = nome + descricaoAdd;
+  const existente = carrinho.find(item => item.nome === nomeFinal);
   if (existente) existente.quantidade++;
-  else carrinho.push({ nome, preco, quantidade: 1 });
-}
-
-function removerProduto(nome) {
-  const existente = carrinho.find(item => item.nome === nome);
-  if (existente) {
-    existente.quantidade--;
-    if (existente.quantidade <= 0) carrinho = carrinho.filter(item => item.nome !== nome);
-  }
+  else carrinho.push({ nome: nomeFinal, preco: preco + adicionais.reduce((t,a)=>t+a.preco,0), quantidade: 1 });
 }
 
 function atualizarCarrinho() {
@@ -277,16 +303,10 @@ function alterarQuantidade(index, delta) {
   }
   mostrarCarrinho();
   atualizarCarrinho();
-  atualizarQuantidadeProdutosNaTela();
 }
 
-btnFinalizar.addEventListener('click', () => {
-  mostrarCarrinho();
-});
-
-btnFechar.addEventListener('click', () => {
-  popup.classList.remove('show');
-});
+btnFinalizar.addEventListener('click', () => mostrarCarrinho());
+btnFechar.addEventListener('click', () => popup.classList.remove('show'));
 
 btnEnviar.addEventListener('click', () => {
   const mensagem = carrinho.map(p => `${p.quantidade}x ${p.nome}`).join('\n') +
@@ -295,19 +315,42 @@ btnEnviar.addEventListener('click', () => {
   window.open(url, '_blank');
 });
 
+// popup confirmar adicionais
+btnAdicionalNao.addEventListener('click', ()=>{
+  adicionarProduto(produtoSelecionado.nome, produtoSelecionado.preco);
+  atualizarCarrinho();
+  popupConfirmar.classList.remove('show');
+});
+
+btnAdicionalSim.addEventListener('click', ()=>{
+  popupConfirmar.classList.remove('show');
+  document.getElementById('lista-adicionais').innerHTML="";
+  produtos.adicionais.forEach(add=>criarAdicional(add, document.getElementById('lista-adicionais')));
+  popupAdicionais.classList.add('show');
+});
+
+btnAddConcluir.addEventListener('click', ()=>{
+  const checks = document.querySelectorAll('#lista-adicionais input[type=checkbox]:checked');
+  let selecionados = [];
+  checks.forEach(c=>selecionados.push({nome:c.value, preco:parseFloat(c.dataset.preco)}));
+  adicionarProduto(produtoSelecionado.nome, produtoSelecionado.preco, selecionados);
+  atualizarCarrinho();
+  popupAdicionais.classList.remove('show');
+});
+
+// inicializar listas
 Object.keys(produtos).forEach(categoria => {
   const container = document.getElementById(`lista-${categoria}`);
   if (container) {
-    produtos[categoria].forEach(produto => criarProduto(produto, container));
+    const isLanche = categoria.includes("lanches");
+    produtos[categoria].forEach(produto => criarProduto(produto, container, isLanche));
   }
 });
 </script>
 
 <div class="autor">
-  <p>Desenvolvido por <a href="https://wa.me/5516988472113" target="_blank">Cassiano - WhatsApp</a></p>
+  <p>Desenvolvido por <a href="https://wa.me/5516992003253" target="_blank">Cassiano - WhatsApp</a></p>
 </div>
 
 </body>
 </html>
-
-
