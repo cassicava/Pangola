@@ -117,11 +117,36 @@
 
 <div id="popup-adicionais" class="popup-container">
   <div class="popup-conteudo">
-    <h2 id="adicionais-titulo">Adicionais para o seu Lanche</h2>
-    <div id="lista-adicionais"></div>
+    <h2 id="adicionais-titulo">Opções do Lanche</h2>
+    
+    <div class="seletor-opcao">
+      <p>Deseja adicionais?</p>
+      <div class="radio-group-popup">
+        <input type="radio" id="adicional-sim" name="quer-adicional" value="sim">
+        <label for="adicional-sim">Sim</label>
+        <input type="radio" id="adicional-nao" name="quer-adicional" value="nao" checked>
+        <label for="adicional-nao">Não</label>
+      </div>
+    </div>
+    <div id="adicionais-container" class="hidden">
+      <div id="lista-adicionais"></div>
+    </div>
+
+    <div class="seletor-opcao">
+      <p>Deseja incluir alguma observação?</p>
+      <div class="radio-group-popup">
+        <input type="radio" id="obs-sim" name="quer-observacao" value="sim">
+        <label for="obs-sim">Sim</label>
+        <input type="radio" id="obs-nao" name="quer-observacao" value="nao" checked>
+        <label for="obs-nao">Não</label>
+      </div>
+    </div>
+    <div id="observacao-container" class="hidden">
+      <textarea id="texto-observacao" placeholder="Ex: tirar a cebola, bem passado, etc."></textarea>
+    </div>
+    
     <div class="popup-buttons">
-      <button id="btn-add-sem-adicionais">Adicionar sem adicionais</button>
-      <button id="btn-add-com-adicionais">Concluir e Adicionar</button>
+      <button id="btn-concluir-item">Adicionar ao Carrinho</button>
     </div>
   </div>
 </div>

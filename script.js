@@ -51,20 +51,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnFechar = document.getElementById('btn-fechar');
     const btnEnviar = document.getElementById('btn-enviar');
 
+    // --- ELEMENTOS DO NOVO POPUP ---
     const popupAdicionais = document.getElementById('popup-adicionais');
     const tituloAdicionais = document.getElementById('adicionais-titulo');
-    const btnAddSemAdicionais = document.getElementById('btn-add-sem-adicionais');
-    const btnAddComAdicionais = document.getElementById('btn-add-com-adicionais');
+    const btnConcluirItem = document.getElementById('btn-concluir-item');
     const listaAdicionaisContainer = document.getElementById('lista-adicionais');
+    const adicionaisContainer = document.getElementById('adicionais-container');
+    const observacaoContainer = document.getElementById('observacao-container');
+    const textoObservacao = document.getElementById('texto-observacao');
+    const radiosAdicional = document.querySelectorAll('input[name="quer-adicional"]');
+    const radiosObservacao = document.querySelectorAll('input[name="quer-observacao"]');
 
     let carrinho = [];
     let produtoSelecionado = null;
     let botaoAdicionarClicado = null;
 
     // --- FUNÇÕES DE LÓGICA DO CARRINHO ---
-    function adicionarProduto(nome, preco, adicionais = [], botao) {
+    function adicionarProduto(nome, preco, adicionais = [], observacao = "", botao) {
         let descricaoAdd = adicionais.length > 0 ? ` (c/ ${adicionais.map(a => a.nome).join(", ")})` : "";
-        let nomeFinal = nome + descricaoAdd;
+        let obsAdd = observacao.trim() !== "" ? ` (Obs: ${observacao.trim()})` : "";
+        let nomeFinal = nome + descricaoAdd + obsAdd;
+        
         let precoFinal = preco + adicionais.reduce((total, adicional) => total + adicional.preco, 0);
 
         const existente = carrinho.find(item => item.nome === nomeFinal);
@@ -130,14 +137,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isLanche) {
                 produtoSelecionado = produto;
                 botaoAdicionarClicado = e.target;
-                tituloAdicionais.innerText = `Adicionais para ${produto.nome}`;
-                listaAdicionaisContainer.innerHTML = "";
+                tituloAdicionais.innerText = `Opções para ${produto.nome}`;
+                
+                // Resetar e popular popup de opções
+                resetarPopupOpcoes();
                 produtos.adicionais.forEach(add => criarAdicional(add, listaAdicionaisContainer));
                 popupAdicionais.classList.add('show');
             } else {
-                adicionarProduto(produto.nome, produto.preco, [], e.target);
+                adicionarProduto(produto.nome, produto.preco, [], "", e.target);
             }
         });
+    }
+    
+    function resetarPopupOpcoes() {
+        document.getElementById('adicional-nao').checked = true;
+        document.getElementById('obs-nao').checked = true;
+        adicionaisContainer.classList.add('hidden');
+        observacaoContainer.classList.add('hidden');
+        textoObservacao.value = "";
+        listaAdicionaisContainer.innerHTML = "";
     }
 
     function criarAdicional(produto, container) {
@@ -203,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
         atualizarCarrinho();
     }
     
-    // Delegação de eventos para botões de quantidade no carrinho
     listaCarrinho.addEventListener('click', (e) => {
         const index = e.target.dataset.index;
         if (index === undefined) return;
@@ -240,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mainContent.addEventListener('scroll', () => {
         let current = '';
         sections.forEach(section => {
-            const sectionTop = section.offsetTop - 100; // Ajuste de offset
+            const sectionTop = section.offsetTop - 100;
             if (mainContent.scrollTop >= sectionTop) {
                 current = section.getAttribute('id');
             }
@@ -254,25 +271,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // --- EVENT LISTENERS ---
+    // --- EVENT LISTENERS GERAIS ---
     btnFinalizar.addEventListener('click', mostrarCarrinho);
-
     btnFechar.addEventListener('click', () => {
         document.body.classList.remove('popup-aberto');
         popupCarrinho.classList.remove('show');
     });
 
-    // NOVO FLUXO DE ADICIONAIS
-    btnAddSemAdicionais.addEventListener('click', () => {
-        adicionarProduto(produtoSelecionado.nome, produtoSelecionado.preco, [], botaoAdicionarClicado);
-        popupAdicionais.classList.remove('show');
+    // --- LÓGICA DO NOVO POPUP DE OPÇÕES ---
+    radiosAdicional.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            adicionaisContainer.classList.toggle('hidden', e.target.value !== 'sim');
+        });
     });
-    
-    btnAddComAdicionais.addEventListener('click', () => {
-        const checks = document.querySelectorAll('#lista-adicionais input[type=checkbox]:checked');
-        let selecionados = [];
-        checks.forEach(c => selecionados.push({ nome: c.value, preco: parseFloat(c.dataset.preco) }));
-        adicionarProduto(produtoSelecionado.nome, produtoSelecionado.preco, selecionados, botaoAdicionarClicado);
+
+    radiosObservacao.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            observacaoContainer.classList.toggle('hidden', e.target.value !== 'sim');
+        });
+    });
+
+    btnConcluirItem.addEventListener('click', () => {
+        let adicionaisSelecionados = [];
+        if (document.getElementById('adicional-sim').checked) {
+            const checks = document.querySelectorAll('#lista-adicionais input[type=checkbox]:checked');
+            checks.forEach(c => adicionaisSelecionados.push({ nome: c.value, preco: parseFloat(c.dataset.preco) }));
+        }
+
+        let observacao = "";
+        if (document.getElementById('obs-sim').checked) {
+            observacao = textoObservacao.value;
+        }
+
+        adicionarProduto(produtoSelecionado.nome, produtoSelecionado.preco, adicionaisSelecionados, observacao, botaoAdicionarClicado);
         popupAdicionais.classList.remove('show');
     });
 

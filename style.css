@@ -356,6 +356,7 @@ footer button {
     align-items: flex-start;
     flex-grow: 1;
     margin-right: 10px;
+    word-break: break-word;
 }
 
 .item-carrinho .item-info span:first-child {
@@ -463,15 +464,45 @@ footer button {
     height: 24px;
 }
 
-/* Botões dos Popups de Adicionais */
-.popup-buttons {
+/* NOVO POPUP DE OPÇÕES */
+.seletor-opcao {
+  background-color: #f7f7f7;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+}
+.seletor-opcao p {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.radio-group-popup {
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  gap: 10px;
+  gap: 15px;
+}
+.radio-group-popup input[type="radio"] {
+  width: auto;
+}
+#adicionais-container, #observacao-container {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  padding-right: 5px;
+}
+#texto-observacao {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+  min-height: 80px;
+  resize: vertical;
+}
+.hidden {
+  display: none;
 }
 .popup-buttons button {
-  padding: 10px 15px;
+  padding: 12px 20px;
   border-radius: 15px;
   border: none;
   font-size: 1em;
@@ -479,8 +510,7 @@ footer button {
   cursor: pointer;
   flex-grow: 1;
 }
-#btn-add-sem-adicionais { background-color: #FF6600; color: white; }
-#btn-add-com-adicionais { background-color: #00b33c; color: white; }
+#btn-concluir-item { background-color: #00b33c; color: white; width: 100%;}
 
 
 /* OUTROS */
