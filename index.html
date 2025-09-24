@@ -15,13 +15,13 @@
 
 <main>
   <nav id="menu-categorias">
-    <a href="#lanches">Lanches</a>
+    <a href="#lanches" class="active">Lanches</a>
     <a href="#porcoes">Porções</a>
     <a href="#bebidas">Bebidas</a>
   </nav>
 
-  <section class="tipos">
-    <h2 id="lanches">LANCHES</h2>
+  <section id="lanches" class="tipos">
+    <h2>LANCHES</h2>
 
     <h3>🥪 LANCHES</h3>
     <div id="lista-lanchessimples"></div>
@@ -39,13 +39,13 @@
     <div id="lista-lanchesfile"></div>
   </section>
 
-  <section class="tipos">
-    <h2 id="porcoes">PORÇÕES</h2>
+  <section id="porcoes" class="tipos">
+    <h2>PORÇÕES</h2>
     <div id="lista-porcoes"></div>
   </section>
 
-  <section class="tipos">
-    <h2 id="bebidas">BEBIDAS</h2>
+  <section id="bebidas" class="tipos">
+    <h2>BEBIDAS</h2>
     <div id="lista-bebidas"></div>
   </section>
   
@@ -61,7 +61,7 @@
   </div>
 </footer>
 
-<div id="popup-carrinho">
+<div id="popup-carrinho" class="popup-container">
   <div class="popup-conteudo">
     <button id="btn-fechar">X</button>
     <h2>Seu Pedido</h2>
@@ -115,344 +115,18 @@
   </div>
 </div>
 
-<div id="popup-confirmar">
+<div id="popup-adicionais" class="popup-container">
   <div class="popup-conteudo">
-    <h2>Deseja adicionais?</h2>
-    <div class="popup-buttons">
-      <button id="btn-adicional-sim">Sim</button>
-      <button id="btn-adicional-nao">Não</button>
-    </div>
-  </div>
-</div>
-
-<div id="popup-adicionais">
-  <div class="popup-conteudo">
-    <h2>Escolha seus adicionais</h2>
+    <h2 id="adicionais-titulo">Adicionais para o seu Lanche</h2>
     <div id="lista-adicionais"></div>
     <div class="popup-buttons">
-      <button id="btn-add-concluir">Concluir</button>
+      <button id="btn-add-sem-adicionais">Adicionar sem adicionais</button>
+      <button id="btn-add-com-adicionais">Concluir e Adicionar</button>
     </div>
   </div>
 </div>
 
-<script>
-const produtos = {
-  lanchessimples: [
-    { nome: "Misto Quente", descricao: "Presunto, queijo, alface, tomate, milho, batata, maionese", preco: 18 },
-    { nome: "Americano", descricao: "Presunto, queijo, ovo, alface, tomate, maionese", preco: 21 },
-    { nome: "Misto Bacon", descricao: "Presunto, queijo, bacon, alface, tomate, milho, batata, maionese", preco: 23 }
-  ],
-  lancheshamburguer: [
-    { nome: "X-Burguer", descricao: "Hambúrguer, queijo, tomate, catupiry", preco: 16 },
-    { nome: "X-Salada", descricao: "Hambúrguer, presunto, queijo, alface, tomate, catupiry", preco: 21 },
-    { nome: "X-Egg", descricao: "Hambúrguer, presunto, queijo, ovo, tomate, catupiry", preco: 22 },
-    { nome: "X-Bacon", descricao: "Hambúrguer, presunto, queijo, bacon, tomate, catupiry", preco: 25 },
-    { nome: "X-Tudo", descricao: "Hambúrguer, presunto, queijo, bacon, ovo, alface, tomate, catupiry", preco: 30 },
-    { nome: "X-Tudo Duplo", descricao: "2 Hambúrgueres, presunto, queijo, 2 ovos, bacon, alface, tomate, catupiry", preco: 40 }
-  ],
-  lanchescachorro: [
-    { nome: "Tradicional", descricao: "Molho, salsicha, alface, tomate, milho, batata, catchup, maionese", preco: 15 },
-    { nome: "Especial", descricao: "Molho, salsicha, alface, tomate, milho, batata, presunto e queijo", preco: 20 },
-    { nome: "Tudo", descricao: "Molho, salsicha, alface, tomate, milho, batata, presunto, queijo, bacon, hambúrguer", preco: 30 }
-  ],
-  lanchesfrango: [
-    { nome: "X-Frango Salada", descricao: "Frango, presunto, queijo, alface, tomate, catupiry", preco: 30 },
-    { nome: "X-Frango Bacon", descricao: "Frango, presunto, queijo, bacon, tomate, catupiry", preco: 35 },
-    { nome: "X-Frango Tudo", descricao: "Frango, presunto, queijo, alface, tomate, bacon, ovo e catupiry", preco: 40 }
-  ],
-  lanchesfile: [
-    { nome: "X-Filé", descricao: "Filé, queijo, alface, tomate, catupiry", preco: 35 },
-    { nome: "Bauru", descricao: "Filé, queijo, alface, tomate, bacon, catupiry", preco: 40 },
-    { nome: "X-Filé Tudo", descricao: "Filé, presunto, queijo, alface, tomate, bacon, ovo, catupiry", preco: 45 }
-  ],
-  adicionais: [
-    { nome: "Hambúrguer", preco: 5 }, { nome: "Bacon", preco: 6 }, { nome: "Queijo/Presunto", preco: 6 }, { nome: "Cheddar/Catupiry", preco: 5 }, { nome: "Salsicha", preco: 3 }, { nome: "Ovo", preco: 3 }, { nome: "Milho", preco: 3 }, { nome: "Batata Palha", preco: 3 }
-  ],
-  porcoes: [
-    { nome: "Batata Frita (Meia)", preco: 20 }, { nome: "Batata Frita (Inteira)", preco: 30 }, { nome: "Batata Queijo e Bacon (Meia)", preco: 40 }, { nome: "Batata Queijo e Bacon (Inteira)", preco: 52 }, { nome: "Batata Completa (Meia)", preco: 52 }, { nome: "Batata Completa (Inteira)", preco: 58 }, { nome: "Frango à Passarinho (Meia)", preco: 50 }, { nome: "Frango à Passarinho (Inteira)", preco: 58 }, { nome: "Frango à Passarinho Queijo e Bacon (Meia)", preco: 58 }, { nome: "Frango à Passarinho Queijo e Bacon (Inteira)", preco: 65 }, { nome: "Calabresa Acebolada (Meia)", preco: 30 }, { nome: "Calabresa Acebolada (Inteira)", preco: 50 }, { nome: "Filé na Chapa (Meia)", preco: 55 }, { nome: "Filé na Chapa (Inteira)", preco: 90 }, { nome: "Filé de Frango na Chapa (Meia)", preco: 35 }, { nome: "Filé de Frango na Chapa (Inteira)", preco: 60 }
-  ],
-  bebidas: [
-    { nome: "Refrigerante lata 350ml", preco: 6 }, { nome: "Suco pequeno 330ml", preco: 7 }, { nome: "Suco grande 900ml", preco: 15 }, { nome: "Coca Cola 2L", preco: 15 }, { nome: "Refrigerante sabores 2L", preco: 14 }, { nome: "Jaboti 2L", preco: 8 }, { nome: "Água sem gás", preco: 4 }, { nome: "Água com gás", preco: 5 }, { nome: "H2O 500ml", preco: 7 }, { nome: "H2O 1,5L", preco: 15 }, { nome: "Cerveja lata 350ml", preco: 6 }
-  ]
-};
-
-// --- ELEMENTOS DA DOM ---
-const listaCarrinho = document.getElementById('lista-carrinho');
-const valorTotal = document.getElementById('valor-total');
-const quantidadeCarrinho = document.getElementById('quantidade-carrinho');
-const valorTotalPopupValor = document.getElementById('valor-total-popup-valor');
-const popupCarrinho = document.getElementById('popup-carrinho');
-const btnFinalizar = document.getElementById('btn-finalizar');
-const btnFechar = document.getElementById('btn-fechar');
-const btnEnviar = document.getElementById('btn-enviar');
-
-const popupConfirmar = document.getElementById('popup-confirmar');
-const btnAdicionalSim = document.getElementById('btn-adicional-sim');
-const btnAdicionalNao = document.getElementById('btn-adicional-nao');
-const popupAdicionais = document.getElementById('popup-adicionais');
-const btnAddConcluir = document.getElementById('btn-add-concluir');
-
-let carrinho = [];
-let produtoSelecionado = null;
-// --- FIM ELEMENTOS DA DOM ---
-
-// --- FUNÇÕES DE LÓGICA DO CARRINHO (MESCLADAS) ---
-function adicionarProduto(nome, preco, adicionais=[]) {
-  let descricaoAdd = adicionais.length > 0 ? " (c/ " + adicionais.map(a=>a.nome).join(", ") + ")" : "";
-  let nomeFinal = nome + descricaoAdd;
-  let precoFinal = preco + adicionais.reduce((total, adicional) => total + adicional.preco, 0);
-
-  const existente = carrinho.find(item => item.nome === nomeFinal);
-  if (existente) {
-      existente.quantidade++;
-  } else {
-      carrinho.push({ nome: nomeFinal, preco: precoFinal, quantidade: 1 });
-  }
-  atualizarCarrinho();
-}
-
-function calcularTotal() {
-  return carrinho.reduce((total, item) => total + item.preco * item.quantidade, 0);
-}
-
-function atualizarCarrinho() {
-  const total = calcularTotal();
-  const totalItens = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
-
-  valorTotal.innerText = total.toFixed(2).replace('.', ',');
-  valorTotalPopupValor.innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
-  quantidadeCarrinho.innerText = totalItens;
-}
-// --- FIM FUNÇÕES DE LÓGICA DO CARRINHO ---
-
-
-// --- FUNÇÕES DE MANIPULAÇÃO DA TELA (UI) ---
-function criarProduto(produto, container, isLanche=false) {
-  const div = document.createElement('div');
-  div.classList.add('produtos');
-  div.setAttribute('data-nome', produto.nome);
-  div.setAttribute('data-preco', produto.preco);
-
-  div.innerHTML = `
-    <div class="topo-produto">
-      <div>
-        <h4>${produto.nome}</h4>
-        ${produto.descricao ? `<p class="descricao">${produto.descricao}</p>` : ""}
-      </div>
-      <div class="preco-controle">
-        <h6>R$ ${produto.preco.toFixed(2).replace('.', ',')}</h6>
-        <button class="btn-add">Adicionar</button>
-      </div>
-    </div>
-  `;
-
-  container.appendChild(div);
-
-  const addBtn = div.querySelector(".btn-add");
-  addBtn.addEventListener("click", () => {
-    if(isLanche){
-      produtoSelecionado = produto;
-      popupConfirmar.classList.add('show');
-    } else {
-      adicionarProduto(produto.nome, produto.preco);
-    }
-  });
-}
-
-function criarAdicional(produto, container){
-  const div = document.createElement('div');
-  div.classList.add('produtos');
-  div.innerHTML = `
-    <div class="topo-produto">
-      <h4>${produto.nome}</h4>
-      <div class="preco-controle">
-        <h6>R$ ${produto.preco.toFixed(2).replace('.', ',')}</h6>
-        <input type="checkbox" value="${produto.nome}" data-preco="${produto.preco}">
-      </div>
-    </div>
-  `;
-  container.appendChild(div);
-}
-
-function mostrarCarrinho() {
-  listaCarrinho.innerHTML = '';
-
-  if (carrinho.length === 0) {
-    listaCarrinho.innerHTML = `<p class="carrinho-vazio">Seu carrinho está vazio.</p>`;
-  } else {
-    carrinho.forEach((item, index) => {
-      const div = document.createElement('div');
-      div.classList.add('item-carrinho', 'fade-in');
-      div.innerHTML = `
-        <div class="item-info">
-          <span>${item.quantidade}x ${item.nome}</span>
-          <span class="preco-item">R$ ${item.preco.toFixed(2).replace('.',',')}</span>
-        </div>
-        <div class="controle-quantidade">
-          <button onclick="alterarQuantidade(${index}, -1)" class="diminuir">-</button>
-          <span>${item.quantidade}</span>
-          <button onclick="alterarQuantidade(${index}, 1)" class="aumentar">+</button>
-        </div>
-      `;
-      listaCarrinho.appendChild(div);
-    });
-
-    const btnEsvaziarDinamico = document.createElement('button');
-    btnEsvaziarDinamico.className = 'btn-esvaziar-estilo';
-    btnEsvaziarDinamico.textContent = 'Esvaziar Carrinho';
-    btnEsvaziarDinamico.onclick = () => {
-        if (confirm("Tem certeza que deseja remover todos os itens do carrinho?")) {
-            carrinho = [];
-            atualizarCarrinho();
-            mostrarCarrinho();
-        }
-    };
-    listaCarrinho.appendChild(btnEsvaziarDinamico);
-  }
-  document.body.classList.add('popup-aberto');
-  popupCarrinho.classList.add('show');
-}
-
-function alterarQuantidade(index, delta) {
-  carrinho[index].quantidade += delta;
-  if (carrinho[index].quantidade <= 0) {
-    carrinho.splice(index, 1);
-  }
-  mostrarCarrinho();
-  atualizarCarrinho();
-}
-// --- FIM FUNÇÕES DE MANIPULAÇÃO DA TELA (UI) ---
-
-
-// --- LÓGICA DO FORMULÁRIO DINÂMICO ---
-const tipoPedidoRadios = document.querySelectorAll('input[name="tipo-pedido"]');
-const camposEntregaContainer = document.getElementById('campos-entrega-container');
-const formaPagamentoRadios = document.querySelectorAll('input[name="forma-pagamento"]');
-const campoTrocoContainer = document.getElementById('campo-troco-container');
-
-tipoPedidoRadios.forEach(radio => {
-  radio.addEventListener('change', (event) => {
-    if (event.target.value === 'entrega') {
-      camposEntregaContainer.style.display = 'flex';
-    } else {
-      camposEntregaContainer.style.display = 'none';
-    }
-  });
-});
-
-formaPagamentoRadios.forEach(radio => {
-  radio.addEventListener('change', (event) => {
-    if (event.target.value === 'dinheiro') {
-      campoTrocoContainer.style.display = 'flex';
-    } else {
-      campoTrocoContainer.style.display = 'none';
-    }
-  });
-});
-// --- FIM LÓGICA DO FORMULÁRIO DINÂMICO ---
-
-
-// --- EVENT LISTENERS ---
-btnFinalizar.addEventListener('click', () => mostrarCarrinho());
-
-btnFechar.addEventListener('click', () => {
-    document.body.classList.remove('popup-aberto');
-    popupCarrinho.classList.remove('show');
-});
-
-btnEnviar.addEventListener('click', () => {
-  const nomeCliente = document.getElementById('nome-cliente').value.trim();
-  const tipoPedidoRadio = document.querySelector('input[name="tipo-pedido"]:checked');
-
-  if (carrinho.length === 0) { alert("Seu carrinho está vazio!"); return; }
-  if (!nomeCliente) { alert("Por favor, preencha seu nome."); return; }
-  if (!tipoPedidoRadio) { alert("Por favor, selecione o tipo de pedido (Entrega ou Retirada)."); return; }
-  
-  const tipoPedido = tipoPedidoRadio.value;
-  let mensagem = `*NOVO PEDIDO - PANGOLA*\n\n*Cliente:* ${nomeCliente}\n`;
-
-  if (tipoPedido === 'entrega') {
-    const endereco = document.getElementById('endereco-cliente').value.trim();
-    const formaPagamentoRadio = document.querySelector('input[name="forma-pagamento"]:checked');
-    
-    if (!endereco) { alert("Por favor, preencha seu endereço para entrega."); return; }
-    if (!formaPagamentoRadio) { alert("Por favor, selecione a forma de pagamento."); return; }
-    
-    const formaPagamento = formaPagamentoRadio.value;
-    mensagem += `*Tipo de Pedido:* ENTREGA\n*Endereço:* ${endereco}\n\n*Itens do Pedido:*\n`;
-    carrinho.forEach(p => { mensagem += `- ${p.quantidade}x ${p.nome}\n`; });
-    const total = calcularTotal();
-    mensagem += `\n*Total: R$ ${total.toFixed(2).replace('.',',')}*\n*Pagamento:* ${formaPagamento === 'dinheiro' ? 'Dinheiro' : 'Cartão'}\n`;
-
-    if (formaPagamento === 'dinheiro') {
-      const trocoPara = parseFloat(document.getElementById('troco-pedido').value);
-      if (trocoPara && trocoPara >= total) {
-        const troco = trocoPara - total;
-        mensagem += `*Levar troco para R$ ${trocoPara.toFixed(2).replace('.',',')}* (Troco: R$ ${troco.toFixed(2).replace('.',',')})\n`;
-      } else if (trocoPara && trocoPara < total) {
-        alert("O valor para troco não pode ser menor que o total do pedido.");
-        return;
-      }
-    }
-  } else { // Retirada
-    mensagem += `*Tipo de Pedido:* RETIRADA NO LOCAL\n\n*Itens do Pedido:*\n`;
-    carrinho.forEach(p => { mensagem += `- ${p.quantidade}x ${p.nome}\n`; });
-    const total = calcularTotal();
-    mensagem += `\n*Total: R$ ${total.toFixed(2).replace('.',',')}*\n`;
-  }
-  
-  const originalButtonHTML = btnEnviar.innerHTML;
-  btnEnviar.innerHTML = 'Enviando...';
-  btnEnviar.disabled = true;
-
-  setTimeout(() => {
-    const url = `https://wa.me/5516992003253?text=${encodeURIComponent(mensagem)}`;
-    window.open(url, '_blank');
-    
-    carrinho = [];
-    atualizarCarrinho();
-    mostrarCarrinho();
-    
-    document.body.classList.remove('popup-aberto');
-    popupCarrinho.classList.remove('show');
-    btnEnviar.innerHTML = originalButtonHTML;
-    btnEnviar.disabled = false;
-  }, 500);
-});
-
-// POPUP CONFIRMAR ADICIONAIS
-btnAdicionalNao.addEventListener('click', ()=>{
-  adicionarProduto(produtoSelecionado.nome, produtoSelecionado.preco);
-  popupConfirmar.classList.remove('show');
-});
-
-btnAdicionalSim.addEventListener('click', ()=>{
-  popupConfirmar.classList.remove('show');
-  document.getElementById('lista-adicionais').innerHTML="";
-  produtos.adicionais.forEach(add=>criarAdicional(add, document.getElementById('lista-adicionais')));
-  popupAdicionais.classList.add('show');
-});
-
-btnAddConcluir.addEventListener('click', ()=>{
-  const checks = document.querySelectorAll('#lista-adicionais input[type=checkbox]:checked');
-  let selecionados = [];
-  checks.forEach(c=>selecionados.push({nome:c.value, preco:parseFloat(c.dataset.preco)}));
-  adicionarProduto(produtoSelecionado.nome, produtoSelecionado.preco, selecionados);
-  popupAdicionais.classList.remove('show');
-});
-
-// INICIALIZAR LISTAS DE PRODUTOS
-document.addEventListener('DOMContentLoaded', () => {
-    Object.keys(produtos).forEach(categoria => {
-        const container = document.getElementById(`lista-${categoria}`);
-        if (container) {
-            const isLanche = categoria.startsWith("lanches");
-            produtos[categoria].forEach(produto => criarProduto(produto, container, isLanche));
-        }
-    });
-});
-</script>
+<script src="script.js" defer></script>
 
 </body>
-
 </html>
